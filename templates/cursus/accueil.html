@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Praxis — Devenez un pro de l'informatique en résolvant de vrais problèmes{% endblock %}
+{% block body %}
+<div class="min-h-screen flex flex-col">
+
+  <!-- ============ Header ============ -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
+      <a href="{% url 'accueil' %}" class="flex items-center gap-2.5">
+        <span class="grid place-items-center w-9 h-9 rounded-xl text-white font-black"
+              style="background:linear-gradient(135deg,#12b268,#0b7a45);box-shadow:0 8px 16px -6px rgba(15,157,88,.6)">P</span>
+        <span class="font-extrabold text-encre text-lg tracking-tight">Praxis</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-600 ml-6">
+        <a href="#concept" class="hover:text-brand-700 transition">Le concept</a>
+        <a href="#domaines" class="hover:text-brand-700 transition">Domaines</a>
+        <a href="#methode" class="hover:text-brand-700 transition">Méthode</a>
+      </nav>
+      <div class="flex-1"></div>
+      <div class="hidden sm:flex items-center gap-2">
+        <a href="{% url 'connexion' %}" class="btn btn-ghost">Connexion</a>
+        <a href="{% url 'inscription' %}" class="btn btn-success">Commencer gratuitement</a>
+      </div>
+      <button id="menuBtn" class="md:hidden grid place-items-center w-10 h-10 rounded-lg hover:bg-slate-100" aria-label="Menu">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div id="mobileMenu" class="md:hidden hidden border-t border-slate-200 bg-white px-4 py-4 space-y-1">
+      <a href="#concept" class="block px-3 py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50">Le concept</a>
+      <a href="#domaines" class="block px-3 py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50">Domaines</a>
+      <a href="#methode" class="block px-3 py-2.5 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50">Méthode</a>
+      <div class="pt-2 flex gap-2">
+        <a href="{% url 'connexion' %}" class="btn btn-ghost flex-1">Connexion</a>
+        <a href="{% url 'inscription' %}" class="btn btn-success flex-1">Commencer</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ Hero ============ -->
+  <section class="hero-glow">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-14 md:pt-20 pb-16 md:pb-24 grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-8 items-center">
+      <!-- Message -->
+      <div>
+        <span class="inline-flex items-center gap-2 rounded-full bg-white border border-slate-200 px-3.5 py-1.5 text-xs font-bold text-brand-700 shadow-sm">
+          <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full rounded-full bg-success-400 opacity-60 animate-ping"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-success-500"></span></span>
+          {{ stats.exercices }} exercices · 5 domaines · 10 paliers de difficulté
+        </span>
+        <h1 class="mt-6 text-[36px] leading-[1.1] sm:text-5xl lg:text-[56px] font-extrabold tracking-tight text-encre">
+          Devenez un pro de l'informatique en
+          <span class="text-gradient">résolvant de vrais problèmes</span>.
+        </h1>
+        <p class="mt-5 text-base sm:text-lg text-slate-600 max-w-xl leading-relaxed">
+          Pas de cours interminables. Chaque exercice vous plonge dans une situation d'entreprise réelle :
+          vous codez chez vous, dans <b>VSCode</b>, avec de vrais outils — Packet Tracer, Wireshark, OpenCV, MQTT…
+          Puis vous revenez valider.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="{% url 'inscription' %}" class="btn btn-success text-base px-6 py-3.5 justify-center">
+            <i data-lucide="rocket" class="w-5 h-5"></i> Créer mon compte gratuit
+          </a>
+          <a href="{% url 'connexion' %}" class="btn btn-ghost text-base px-6 py-3.5 justify-center">
+            <i data-lucide="log-in" class="w-4 h-4"></i> J'ai déjà un compte
+          </a>
+        </div>
+        <div class="mt-9 grid grid-cols-3 max-w-md rounded-2xl border border-slate-200 bg-white/70 backdrop-blur divide-x divide-slate-200 overflow-hidden">
+          <div class="py-4 text-center"><div class="text-xl sm:text-2xl font-black text-encre">{{ stats.exercices }}</div><div class="text-[11px] sm:text-xs font-bold text-slate-500">Exercices</div></div>
+          <div class="py-4 text-center"><div class="text-xl sm:text-2xl font-black text-encre">{{ stats.domaines }}</div><div class="text-[11px] sm:text-xs font-bold text-slate-500">Domaines</div></div>
+          <div class="py-4 text-center"><div class="text-xl sm:text-2xl font-black text-encre">10</div><div class="text-[11px] sm:text-xs font-bold text-slate-500">Paliers</div></div>
+        </div>
+      </div>
+
+      <!-- Maquette visuelle -->
+      <div class="hidden lg:block relative" aria-hidden="true">
+        <div class="mock-fenetre flotte">
+          <div class="mock-barre">
+            <span class="pt r"></span><span class="pt y"></span><span class="pt g"></span>
+            <span class="ml-3 mono text-[10px] font-bold text-slate-400">releve_pointages.py — VSCode</span>
+          </div>
+          <div class="mock-terminal">
+            <div><span class="k">def</span> <span class="c">filtrer_hors_horaires</span>(pointages):</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">return</span> [p <span class="k">for</span> p <span class="k">in</span> pointages</div>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="k">if</span> p[<span class="s">"heure"</span>] &lt; <span class="s">"07:30"</span> <span class="k">or</span> p[<span class="s">"heure"</span>] &gt; <span class="s">"19:00"</span>]</div>
+            <div class="d"># test local : 3 anomalies détectées ✔</div>
+          </div>
+        </div>
+        <!-- Carte exercice flottante -->
+        <div class="absolute -bottom-10 -left-12 w-[300px] dom-vert" style="animation:flotte 6.5s ease-in-out .8s infinite">
+          <div class="exo-carte">
+            <div class="p-5">
+              <div class="flex items-center justify-between">
+                <span class="dom-tag"><span class="dot"></span>Réseaux</span>
+                <span class="resolu-badge"><i data-lucide="check" class="w-3.5 h-3.5"></i> Résolu</span>
+              </div>
+              <h3 class="mt-3 font-extrabold text-encre text-sm leading-snug">Segmentez le réseau de la clinique en 4 VLAN</h3>
+              <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                <span class="jauge">{% for b in "1234567890"|make_list %}<span class="bar {% if forloop.counter <= 4 %}on{% endif %}"></span>{% endfor %}</span>
+                <span class="text-[10px] font-bold text-slate-400">Packet Tracer · 45 min</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Badge palier -->
+        <div class="absolute -top-6 right-6 rounded-2xl bg-white border border-slate-200 shadow-lg px-4 py-3 flex items-center gap-3">
+          <span class="grid place-items-center w-9 h-9 rounded-xl text-white font-black text-sm" style="background:linear-gradient(135deg,#2450eb,#1d3fd8)">P7</span>
+          <div class="leading-tight">
+            <p class="text-xs font-extrabold text-encre">Difficulté croissante</p>
+            <p class="text-[10px] font-bold text-slate-400">du palier 1 au palier 10</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Bandeau outils ============ -->
+  <section class="border-y border-slate-200/70 bg-white/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row items-center gap-5">
+      <span class="rail-titre shrink-0">Vous travaillez avec les outils du métier</span>
+      <div class="flex flex-wrap items-center justify-center gap-2.5">
+        {% for o in outils %}
+          <span class="logo-pill inline-flex items-center gap-2.5 rounded-2xl border border-slate-200 bg-white px-3.5 py-2 shadow-sm">
+            <img src="{% static 'icons/' %}{{ o.icon }}.svg" alt="{{ o.nom }}" loading="lazy" class="h-[22px] w-auto max-w-[120px] object-contain">
+            <span class="text-[13px] font-extrabold text-slate-700">{{ o.nom }}</span>
+          </span>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Concept : le flux ============ -->
+  <section id="concept" class="py-16 md:py-24 scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-2xl">
+        <p class="rail-titre !text-success-600">Le concept</p>
+        <h2 class="mt-2 text-2xl md:text-4xl font-extrabold tracking-tight text-encre">Un seul rythme : lire, coder, valider</h2>
+        <p class="mt-3 text-slate-500">Oubliez les vidéos de 3 heures. Chaque exercice se tient en cinq temps, du contexte jusqu'à la déclaration « résolu ».</p>
+      </div>
+      <div class="flow mt-10">
+        <div class="card card-hover p-5 relative">
+          <span class="mono text-[10px] font-black text-brand-600">01</span>
+          <i data-lucide="building-2" class="w-6 h-6 text-brand-600 mt-1.5"></i>
+          <h3 class="mt-3 font-extrabold text-encre text-sm">Une mise en situation</h3>
+          <p class="mt-1 text-[13px] text-slate-500 leading-relaxed">Une entreprise, un problème réel, un livrable attendu. Vous savez pourquoi vous codiez.</p>
+        </div>
+        <div class="card card-hover p-5">
+          <span class="mono text-[10px] font-black text-brand-600">02</span>
+          <i data-lucide="target" class="w-6 h-6 text-orange-500 mt-1.5"></i>
+          <h3 class="mt-3 font-extrabold text-encre text-sm">Une tâche précise</h3>
+          <p class="mt-1 text-[13px] text-slate-500 leading-relaxed">Un objectif clair, des contraintes professionnelles, des critères de réussite vérifiables.</p>
+        </div>
+        <div class="card card-hover p-5">
+          <span class="mono text-[10px] font-black text-brand-600">03</span>
+          <i data-lucide="monitor" class="w-6 h-6 text-encre mt-1.5"></i>
+          <h3 class="mt-3 font-extrabold text-encre text-sm">Vous codez chez vous</h3>
+          <p class="mt-1 text-[13px] text-slate-500 leading-relaxed">Dans VSCode, votre environnement. Aucun éditeur imposé, aucune dépendance à la plateforme.</p>
+        </div>
+        <div class="card card-hover p-5">
+          <span class="mono text-[10px] font-black text-brand-600">04</span>
+          <i data-lucide="lightbulb" class="w-6 h-6 text-amber-500 mt-1.5"></i>
+          <h3 class="mt-3 font-extrabold text-encre text-sm">Des indices si besoin</h3>
+          <p class="mt-1 text-[13px] text-slate-500 leading-relaxed">Un coup de pouce progressif, jamais la solution toute faite. Vous débloquez sans être spollié.</p>
+        </div>
+        <div class="card card-hover p-5">
+          <span class="mono text-[10px] font-black text-success-600">05</span>
+          <i data-lucide="flag-checkered" class="w-6 h-6 text-success-600 mt-1.5"></i>
+          <h3 class="mt-3 font-extrabold text-encre text-sm">« Je l'ai résolu »</h3>
+          <p class="mt-1 text-[13px] text-slate-500 leading-relaxed">Vous cochez, la plateforme enchaîne sur le suivant du même niveau. Votre série ne s'arrête pas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Domaines ============ -->
+  <section id="domaines" class="py-16 md:py-24 bg-encre text-white scroll-mt-20 relative overflow-hidden on-dark">
+    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(700px 380px at 80% 0%, rgba(36,80,235,.25), transparent 60%),radial-gradient(600px 340px at 10% 100%, rgba(15,157,88,.18), transparent 60%)"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="max-w-2xl">
+          <p class="rail-titre !text-success-400">Les domaines</p>
+          <h2 class="mt-2 text-2xl md:text-4xl font-extrabold tracking-tight">Cinq filières, du premier script au système complet</h2>
+          <p class="mt-3 text-slate-400">Chaque domaine est gradué en 10 paliers. Commencez facile, montez quand vous voulez.</p>
+        </div>
+        <a href="{% url 'inscription' %}" class="btn btn-success">Explorer le catalogue <i data-lucide="arrow-right" class="w-4 h-4"></i></a>
+      </div>
+      <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for d in domains %}
+        <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 hover:bg-white/10 hover:border-white/20 transition group">
+          <div class="flex items-center justify-between">
+            <span class="dom-icone dom-{{ d.couleur }} w-12 h-12"><i data-lucide="{{ d.icone }}" class="w-6 h-6"></i></span>
+            <span class="mono text-[11px] font-bold text-slate-500">{{ d.exercices.count }} ex.</span>
+          </div>
+          <h3 class="mt-4 text-lg font-extrabold">{{ d.titre }}</h3>
+          <p class="mt-1 text-sm text-slate-400 leading-relaxed">{{ d.sous_titre }}</p>
+        </div>
+        {% endfor %}
+        <!-- Carte CTA -->
+        <a href="{% url 'connexion' %}" class="rounded-2xl border border-dashed border-white/20 p-6 flex flex-col justify-center text-left hover:bg-white/5 transition group">
+          <span class="grid place-items-center w-12 h-12 rounded-[.9rem] bg-success-500/15 text-success-400 group-hover:scale-105 transition"><i data-lucide="compass" class="w-6 h-6"></i></span>
+          <h3 class="mt-4 text-lg font-extrabold">Ou trouver le prochain défi ?</h3>
+          <p class="mt-1 text-sm text-slate-400">Filtrez par domaine, palier, thème ou outil — le catalogue est à vous.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Méthode / confiance ============ -->
+  <section id="methode" class="py-16 md:py-24 scroll-mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-2xl">
+        <p class="rail-titre !text-brand-600">La méthode</p>
+        <h2 class="mt-2 text-2xl md:text-4xl font-extrabold tracking-tight text-encre">Conçu pour des compétences qui embauchent</h2>
+      </div>
+      <div class="mt-10 grid md:grid-cols-3 gap-5">
+        <div class="card card-hover p-7">
+          <span class="dom-icone dom-bleu w-12 h-12"><i data-lucide="briefcase" class="w-6 h-6"></i></span>
+          <h3 class="mt-4 font-extrabold text-encre text-lg">Cas réels d'entreprise</h3>
+          <p class="mt-2 text-sm text-slate-500 leading-relaxed">Pointages d'usine, réseau de clinique, campagne e-commerce : chaque contexte simule un vrai cahier des charges avec ses contraintes.</p>
+        </div>
+        <div class="card card-hover p-7">
+          <span class="dom-icone dom-rouge w-12 h-12"><i data-lucide="shield-check" class="w-6 h-6"></i></span>
+          <h3 class="mt-4 font-extrabold text-encre text-lg">Cybersécurité encadrée</h3>
+          <p class="mt-2 text-sm text-slate-500 leading-relaxed">Les exercices offensifs se déroulent <b>exclusivement en laboratoire autorisé</b>, avec un objectif de remédiation : attaquer pour apprendre à défendre.</p>
+        </div>
+        <div class="card card-hover p-7">
+          <span class="dom-icone dom-vert w-12 h-12"><i data-lucide="trending-up" class="w-6 h-6"></i></span>
+          <h3 class="mt-4 font-extrabold text-encre text-lg">Progression mesurable</h3>
+          <p class="mt-2 text-sm text-slate-500 leading-relaxed">Exercices résolus par domaine, palier le plus dur atteint, série de jours consécutifs : votre niveau réel, en un coup d'œil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA final ============ -->
+  <section class="pb-16 md:pb-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="relative overflow-hidden rounded-3xl px-6 py-12 sm:px-12 sm:py-16 text-center"
+           style="background:linear-gradient(120deg,#0b7a45,#0f9d58 45%,#2450eb)">
+        <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image:radial-gradient(#fff 1.2px,transparent 1.2px);background-size:22px 22px"></div>
+        <h2 class="relative text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Votre premier exercice prend 10 minutes.</h2>
+        <p class="relative mt-3 text-emerald-50/90 max-w-xl mx-auto">Créez votre compte, choisissez un domaine, résolvez votre première mise en situation ce soir — depuis votre VSCode.</p>
+        <div class="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="{% url 'inscription' %}" class="btn bg-white text-success-700 hover:bg-emerald-50 text-base px-7 py-3.5 font-extrabold shadow-lg">
+            <i data-lucide="rocket" class="w-5 h-5"></i> Commencer gratuitement
+          </a>
+          <a href="{% url 'connexion' %}" class="btn text-white border border-white/40 hover:bg-white/10 text-base px-7 py-3.5">Déjà membre</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Footer ============ -->
+  <footer class="border-t border-slate-200 bg-white/60 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 grid sm:grid-cols-3 gap-8 items-start">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="grid place-items-center w-8 h-8 rounded-lg text-white font-black text-sm" style="background:linear-gradient(135deg,#12b268,#0b7a45)">P</span>
+          <span class="font-extrabold text-encre">Praxis</span>
+        </div>
+        <p class="mt-3 text-sm text-slate-500 max-w-xs leading-relaxed">La plateforme d'entraînement qui vous fait coder des situations réelles, chez vous, dans vos propres outils.</p>
+      </div>
+      <div>
+        <p class="rail-titre mb-3">Navigation</p>
+        <ul class="space-y-2 text-sm font-semibold text-slate-600">
+          <li><a href="#concept" class="hover:text-brand-700">Le concept</a></li>
+          <li><a href="#domaines" class="hover:text-brand-700">Domaines</a></li>
+          <li><a href="#methode" class="hover:text-brand-700">Méthode</a></li>
+          <li><a href="{% url 'connexion' %}" class="hover:text-brand-700">Connexion</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="rail-titre mb-3">Engagement</p>
+        <p class="text-sm text-slate-500 leading-relaxed">Contenus à but pédagogique. Les exercices de sécurité offensive s'exécutent uniquement dans des laboratoires autorisés, avec un objectif de remédiation.</p>
+      </div>
+    </div>
+    <div class="border-t border-slate-200/70 py-5 text-center text-xs text-slate-400 font-semibold">
+      © Praxis — Apprendre l'informatique en faisant.
+    </div>
+  </footer>
+</div>
+
+<script>
+  const mb = document.getElementById('menuBtn');
+  if (mb) mb.addEventListener('click', () => document.getElementById('mobileMenu').classList.toggle('hidden'));
+  document.querySelectorAll('#mobileMenu a[href^="#"]').forEach(a =>
+    a.addEventListener('click', () => document.getElementById('mobileMenu').classList.add('hidden')));
+</script>
+{% endblock %}

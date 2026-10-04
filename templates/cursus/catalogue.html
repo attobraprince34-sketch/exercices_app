@@ -1,0 +1,137 @@
+{% extends "cursus/_shell.html" %}
+{% block title %}Catalogue d'exercices — Praxis{% endblock %}
+{% block content %}
+
+<!-- En-tête de page -->
+<div class="flex flex-wrap items-end justify-between gap-4">
+  <div>
+    <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-brand-600">
+      <i data-lucide="library" class="w-4 h-4"></i> Plateforme d'entraînement
+    </div>
+    <h1 class="mt-1.5 text-[28px] leading-tight font-extrabold tracking-tight text-encre">Catalogue d'exercices</h1>
+    <p class="mt-1 text-sm text-slate-500">
+      <span class="font-bold text-encre">{{ total }}</span> exercice{{ total|pluralize }} ·
+      tri du plus facile au plus difficile ·
+      <span class="font-bold text-success-600">{{ nb_resolus }} résolu{{ nb_resolus|pluralize }}</span> sur votre compte.
+    </p>
+  </div>
+  <form method="get" action="" class="w-full sm:w-auto flex items-center gap-2">
+    {% for k, v in params.items %}{% if v and k != 'q' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endif %}{% endfor %}
+    <div class="relative w-full sm:w-80">
+      <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+      <input type="search" name="q" value="{{ params.q }}" placeholder="Rechercher un titre, un thème…"
+             class="champ pl-10 w-full rounded-xl shadow-sm">
+    </div>
+    <button class="btn btn-primary" aria-label="Rechercher"><i data-lucide="search" class="w-4 h-4"></i></button>
+  </form>
+</div>
+
+<!-- Barre d'outils de filtres -->
+<div class="mt-4 sm:mt-6 rail p-3 space-y-3">
+  <!-- Onglets domaines -->
+  <div class="seg overflow-x-auto">
+    <a href="{{ domaine_tous_url }}" class="{% if not params.domaine %}actif{% endif %}">
+      <i data-lucide="layers" class="w-4 h-4"></i> Tous
+    </a>
+    {% for d in chips_domaines %}
+      <a href="{{ d.chip_url }}" class="dom-{{ d.couleur }} {% if d.actif %}actif{% endif %}">
+        <i data-lucide="{{ d.icone }}" class="w-4 h-4"></i>
+        {{ d.titre }}
+        <span class="tab-nb">{{ d.nb }}</span>
+      </a>
+    {% endfor %}
+  </div>
+
+  <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-3 sm:gap-x-5 sm:gap-y-3">
+    <!-- Paliers : une ligne qui se fait défiler horizontalement sur petit écran -->
+    <div class="flex items-center gap-2.5 min-w-0 w-full lg:w-auto">
+      <span class="rail-titre shrink-0">Palier</span>
+      <div class="scroll-x flex-1 lg:flex-none items-center gap-1.5">
+        {% for p in chips_paliers %}
+          <a href="{{ p.url }}" class="pastille-niveau !h-9 !w-9 !text-[11px] shrink-0 {% if p.actif %}actif{% endif %}">{{ p.n }}</a>
+        {% endfor %}
+      </div>
+      {% if params.domaine or params.palier or params.type or params.theme or params.q or params.etat %}
+        <a href="{{ effacer_url }}" class="ml-auto lg:order-last shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50/60 px-2.5 sm:px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition whitespace-nowrap">
+          <i data-lucide="filter-x" class="w-3.5 h-3.5"></i> <span class="hidden sm:inline">Réinitialiser</span><span class="sm:hidden">Effacer</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <!-- Sélecteurs -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap items-stretch gap-2 w-full sm:w-auto lg:ml-auto">
+      <span class="relative">
+        <select onchange="if(this.value)location.href=this.value" class="champ !py-2 pr-8 w-full rounded-xl text-xs font-bold cursor-pointer appearance-none">
+          <option value="{{ type_tous_url }}" {% if not params.type %}selected{% endif %}>Tous les formats</option>
+          {% for t in chips_types %}<option value="{{ t.url }}" {% if t.actif %}selected{% endif %}>{{ t.nom }}</option>{% endfor %}
+        </select>
+        <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+      </span>
+      <span class="relative">
+        <select onchange="if(this.value)location.href=this.value" class="champ !py-2 pr-8 w-full rounded-xl text-xs font-bold cursor-pointer appearance-none">
+          <option value="{{ theme_tous_url }}" {% if not params.theme %}selected{% endif %}>Tous les thèmes</option>
+          {% for th in chips_themes %}<option value="{{ th.url }}" {% if th.actif %}selected{% endif %}>{{ th.nom }}</option>{% endfor %}
+        </select>
+        <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+      </span>
+      <span class="relative col-span-2 sm:col-span-1">
+        <select onchange="if(this.value)location.href=this.value" class="champ !py-2 pr-8 w-full rounded-xl text-xs font-bold cursor-pointer appearance-none">
+          <option value="{{ etat_tous_url }}" {% if not params.etat %}selected{% endif %}>Résolus &amp; à faire</option>
+          {% for e in chips_etats %}<option value="{{ e.url }}" {% if e.actif %}selected{% endif %}>{{ e.nom }}</option>{% endfor %}
+        </select>
+        <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Grille d'exercices -->
+<div class="mt-6">
+  <div class="hidden sm:flex items-center justify-between mb-4">
+    <span class="rail-titre">Exercices — du plus facile au plus difficile</span>
+    <span class="text-xs font-bold text-slate-400">Page {{ page_obj.number }} / {{ total_pages }}</span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4">
+    {% for m in page_obj %}
+      {% include "cursus/partials/_mission_card.html" with mission=m faite=m.faite %}
+    {% empty %}
+      <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white/60 p-14 text-center">
+        <span class="mx-auto grid place-items-center w-14 h-14 rounded-2xl bg-slate-100 text-slate-400">
+          <i data-lucide="compass" class="w-6 h-6"></i>
+        </span>
+        <p class="mt-4 font-extrabold text-encre text-lg">Aucun exercice avec ces filtres</p>
+        <p class="text-sm text-slate-500 mt-1">Élargissez la recherche ou repartez de zéro.</p>
+        <a href="{{ effacer_url }}" class="btn btn-primary mt-5 inline-flex"><i data-lucide="layers" class="w-4 h-4"></i> Voir tout le catalogue</a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+  <nav class="mt-8 flex items-center justify-center gap-1.5 flex-wrap">
+    {% if page_obj.has_previous %}
+      <a href="?{{ page_qs }}&page={{ page_obj.previous_page_number }}" class="page-lien"><i data-lucide="chevron-left" class="w-4 h-4"></i></a>
+    {% endif %}
+    {% if page_window.0 > 1 %}
+      <a href="?{{ page_qs }}&page=1" class="page-lien">1</a>
+      <span class="text-slate-400 px-1">…</span>
+    {% endif %}
+    {% for p in page_window %}
+      {% if p == page_obj.number %}
+        <span class="page-courante">{{ p }}</span>
+      {% else %}
+        <a href="?{{ page_qs }}&page={{ p }}" class="page-lien">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if page_window|last < total_pages %}
+      <span class="text-slate-400 px-1">…</span>
+      <a href="?{{ page_qs }}&page={{ total_pages }}" class="page-lien">{{ total_pages }}</a>
+    {% endif %}
+    {% if page_obj.has_next %}
+      <a href="?{{ page_qs }}&page={{ page_obj.next_page_number }}" class="page-lien"><i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+    {% endif %}
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

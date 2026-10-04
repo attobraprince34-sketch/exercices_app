@@ -1,0 +1,32 @@
+{% comment %} Carte exercice v3 — usage : {% include ... with mission=m faite=bool %}{% endcomment %}
+<a href="{% url 'mission_detail' slug=mission.slug %}"
+   class="exo-carte dom-{{ mission.domaine.couleur|default:'bleu' }} group {% if faite %}exo-carte-resolue{% endif %}">
+  <div class="p-5 pt-[1.15rem]">
+    <div class="flex items-center justify-between gap-2">
+      <span class="dom-tag"><span class="dot"></span>{{ mission.domaine.titre|default:"Exercice" }}</span>
+      {% if faite %}
+        <span class="resolu-badge"><i data-lucide="check" class="w-3.5 h-3.5"></i> Résolu</span>
+      {% else %}
+        <span class="mono text-[10px] font-bold tracking-wider text-slate-400 group-hover:text-slate-600 transition">{{ mission.get_type_display|upper }}</span>
+      {% endif %}
+    </div>
+
+    <h3 class="exo-titre mt-3.5 font-extrabold text-encre text-[16px] leading-snug line-clamp-2">{{ mission.titre }}</h3>
+    <p class="mt-1.5 text-[13px] text-slate-500 leading-relaxed line-clamp-2">{{ mission.accroche|default:mission.objectif }}</p>
+
+    <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-3">
+      <span class="flex items-center gap-2" title="Palier {{ mission.palier }} sur 10">
+        <span class="jauge">
+          {% for b in "1234567890"|make_list %}<span class="bar {% if forloop.counter <= mission.palier %}on{% endif %}"></span>{% endfor %}
+        </span>
+        <span class="mono text-[10px] font-bold text-slate-400">P{{ mission.palier }}</span>
+      </span>
+      <span class="flex items-center gap-3 text-[11px] font-bold text-slate-400">
+        {% if mission.duree %}<span class="inline-flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5"></i> {{ mission.duree }}</span>{% endif %}
+        <span class="inline-flex items-center gap-1 text-brand-600 group-hover:gap-1.5 transition-all">
+          Ouvrir <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </span>
+      </span>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Praxis — Apprendre l'informatique en faisant{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            encre: '#0B1220',
+            brand: {50:'#eff5ff',100:'#dbe8fe',200:'#bfd4fe',300:'#93b6fd',400:'#6090fa',500:'#3b6df6',600:'#2450eb',700:'#1d3fd8',800:'#1e37af',900:'#1e328a'},
+            success:{50:'#ecfdf5',100:'#d1fadf',200:'#a6f4c5',300:'#6ce9a6',400:'#32d583',500:'#0f9d58',600:'#0b7a45',700:'#095c36'},
+          },
+          fontFamily: {
+            sans: ['Inter','system-ui','sans-serif'],
+            mono: ['"JetBrains Mono"','ui-monospace','monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v={% now 'u' %}">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+{% if messages %}
+<div id="messages" class="fixed top-4 right-4 z-[100] space-y-2 w-[calc(100%-2rem)] max-w-sm">
+  {% for message in messages %}
+    <div class="toast flex items-start gap-3 rounded-xl px-4 py-3 shadow-lg border
+        {% if message.tags == 'success' %}bg-success-50 border-success-200 text-success-700
+        {% elif message.tags == 'error' %}bg-red-50 border-red-200 text-red-700
+        {% else %}bg-brand-50 border-brand-200 text-brand-700{% endif %}">
+      <i data-lucide="{% if message.tags == 'success' %}check-circle-2{% elif message.tags == 'error' %}alert-circle{% else %}info{% endif %}" class="w-5 h-5 shrink-0 mt-0.5"></i>
+      <span class="text-sm font-medium">{{ message }}</span>
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block body %}{% endblock %}
+
+<script>
+  if (window.lucide) lucide.createIcons();
+  document.body.addEventListener('htmx:afterSwap', () => lucide.createIcons());
+  document.body.addEventListener('htmx:configRequest', (e) => {
+    e.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+  });
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

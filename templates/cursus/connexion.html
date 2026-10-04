@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Connexion — Praxis{% endblock %}
+{% block body %}
+<div class="min-h-screen grid md:grid-cols-2">
+  <div class="hidden md:flex bg-encre text-white flex-col justify-between p-10 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(600px 340px at 85% 8%, rgba(36,80,235,.28), transparent 60%),radial-gradient(520px 320px at 5% 100%, rgba(15,157,88,.22), transparent 60%)"></div>
+    <a href="{% url 'accueil' %}" class="relative flex items-center gap-2.5"><span class="grid place-items-center w-9 h-9 rounded-xl text-white font-black" style="background:linear-gradient(135deg,#12b268,#0b7a45)">P</span><span class="font-extrabold text-lg">Praxis</span></a>
+    <div class="relative">
+      <h2 class="text-3xl font-extrabold leading-tight">Une situation réelle.<br>Un problème.<br><span class="text-gradient">Votre mission.</span></h2>
+      <p class="text-slate-400 mt-4 max-w-sm">Reprenez votre série, filtrez le catalogue par domaine et palier, et continuez à résoudre.</p>
+    </div>
+    <div class="relative text-xs text-slate-500">© Praxis — apprentissage pratique de l'informatique.</div>
+  </div>
+  <div class="flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-sm">
+      <a href="{% url 'accueil' %}" class="md:hidden flex items-center gap-2 mb-6"><span class="grid place-items-center w-8 h-8 rounded-lg bg-success-500 text-white font-black">P</span><span class="font-extrabold text-encre">Praxis</span></a>
+      <h1 class="text-2xl font-extrabold text-encre">Connexion</h1>
+      <p class="text-sm text-slate-500 mt-1">Ravi de vous revoir — vos exercices vous attendent.</p>
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+          <div>
+            <label class="block text-sm font-semibold text-slate-600 mb-1">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>{% endif %}
+          </div>
+        {% endfor %}
+        {% if form.non_field_errors %}<p class="text-sm text-red-600 bg-red-50 rounded-lg p-3">{{ form.non_field_errors|striptags }}</p>{% endif %}
+        <button type="submit" class="btn btn-primary w-full">Se connecter</button>
+      </form>
+      <p class="text-sm text-slate-500 mt-6 text-center">Pas encore de compte ? <a href="{% url 'inscription' %}" class="font-bold text-brand-700 hover:underline">Créer un compte</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

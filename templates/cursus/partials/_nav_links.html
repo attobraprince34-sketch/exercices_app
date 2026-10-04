@@ -1,0 +1,8 @@
+{% with rm=request.resolver_match %}
+<a href="{% url 'catalogue' %}" class="navlink {% if rm.url_name == 'catalogue' or rm.url_name == 'mission_detail' %}navlink-active{% endif %}">
+  <i data-lucide="library-big" class="w-[18px] h-[18px]"></i> Catalogue
+</a>
+<a href="{% url 'progression' %}" class="navlink {% if rm.url_name == 'progression' %}navlink-active{% endif %}">
+  <i data-lucide="trending-up" class="w-[18px] h-[18px]"></i> Progression
+</a>
+{% endwith %}

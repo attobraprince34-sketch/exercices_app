@@ -1,0 +1,66 @@
+{% extends "cursus/_shell.html" %}
+{% block title %}Profil — Praxis{% endblock %}
+{% block content %}
+
+<!-- Bandeau identité -->
+<div class="fiche-hero dom-bleu">
+  <div class="bande"></div>
+  <div class="trame"></div>
+  <div class="p-5 sm:p-7 relative flex flex-col sm:flex-row items-center sm:items-start gap-5">
+    <span class="grid place-items-center w-20 h-20 rounded-2xl avatar-{{ user.profil.couleur_avatar }} text-white text-3xl font-black shrink-0 shadow-lg">
+      {{ user.username|slice:":1"|upper }}
+    </span>
+    <div class="flex-1 text-center sm:text-left min-w-0">
+      <h1 class="text-2xl font-extrabold text-encre leading-tight">{{ user.get_full_name|default:user.username }}</h1>
+      <p class="text-brand-700 font-bold text-sm mt-0.5">{{ user.profil.poste|default:"Apprenant sur Praxis" }}</p>
+      {% if user.profil.bio %}<p class="text-sm text-slate-500 mt-2 leading-relaxed">{{ user.profil.bio }}</p>{% endif %}
+      <div class="text-xs text-slate-400 font-semibold mt-2">Membre depuis {{ user.date_joined|date:"F Y" }}</div>
+    </div>
+    <a href="{% url 'parametres' %}" class="btn btn-ghost shrink-0"><i data-lucide="settings" class="w-4 h-4"></i> Modifier</a>
+  </div>
+</div>
+
+<!-- Statistiques -->
+<div class="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="brief"><div class="brief-corps text-center">
+    <div class="text-3xl font-black text-encre">{{ stats.total_faites }}</div>
+    <div class="rail-titre mt-1">Exercices résolus</div>
+  </div></div>
+  <div class="brief"><div class="brief-corps text-center">
+    <div class="text-3xl font-black text-slate-400">{{ stats.total_exercices }}</div>
+    <div class="rail-titre mt-1">Au catalogue</div>
+  </div></div>
+  <div class="brief"><div class="brief-corps text-center">
+    <div class="text-3xl font-black text-encre">{{ stats.max_palier_faite }}<span class="text-base font-bold text-slate-400">/10</span></div>
+    <div class="jauge mt-2 justify-center">{% for b in "1234567890"|make_list %}<span class="bar {% if forloop.counter <= stats.max_palier_faite %}on{% endif %}" {% if forloop.counter <= stats.max_palier_faite %}style="background:#2450eb"{% endif %}></span>{% endfor %}</div>
+    <div class="rail-titre mt-2">Palier le plus dur</div>
+  </div></div>
+  <div class="brief"><div class="brief-corps text-center">
+    <div class="text-3xl font-black text-orange-500">{{ user.profil.streak_jours }}</div>
+    <div class="rail-titre mt-1 flex items-center justify-center gap-1"><i data-lucide="flame" class="w-3.5 h-3.5 text-orange-400"></i> Jours de série</div>
+  </div></div>
+</div>
+
+<!-- Résolu par domaine -->
+<section class="brief mt-6">
+  <div class="brief-head">
+    <i data-lucide="layers" class="w-5 h-5 text-brand-600"></i>
+    <h2 class="font-extrabold text-encre">Résolu par domaine</h2>
+    <a href="{% url 'catalogue' %}" class="ml-auto text-xs font-bold text-brand-600 hover:text-brand-800">Catalogue →</a>
+  </div>
+  <div class="brief-corps grid sm:grid-cols-2 gap-3">
+    {% for row in stats.par_domaine %}
+      <a href="{% url 'catalogue' %}?domaine={{ row.domaine.slug }}" class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 hover:border-brand-300 hover:shadow-sm transition group dom-{{ row.domaine.couleur }}">
+        <span class="dom-icone w-9 h-9 shrink-0"><i data-lucide="{{ row.domaine.icone }}" class="w-4 h-4"></i></span>
+        <div class="min-w-0 flex-1">
+          <p class="text-sm font-extrabold text-encre truncate group-hover:text-brand-700 transition">{{ row.domaine.titre }}</p>
+          <div class="progress-track mt-1.5 !h-1.5"><div class="dom-barre" style="width:{{ row.pct }}%"></div></div>
+        </div>
+        <span class="text-xs font-black shrink-0"><span class="text-success-600">{{ row.faites }}</span><span class="text-slate-300"> / {{ row.total }}</span></span>
+      </a>
+    {% empty %}
+      <p class="text-sm text-slate-500 sm:col-span-2">Aucun domaine configuré.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

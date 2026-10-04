@@ -1,0 +1,43 @@
+{% extends "cursus/_shell.html" %}
+{% block title %}Paramètres — Praxis{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-extrabold text-encre">Paramètres</h1>
+<p class="text-slate-500 text-sm mt-1">Gérez votre compte et votre profil.</p>
+
+<div class="mt-6 grid lg:grid-cols-2 gap-5">
+  <form method="post" class="card p-6 space-y-4">
+    {% csrf_token %}
+    <h2 class="font-extrabold text-encre flex items-center gap-2"><i data-lucide="user" class="w-5 h-5 text-brand-600"></i> Compte</h2>
+    {% for field in compte_form %}
+      <div>
+        <label class="block text-sm font-semibold text-slate-600 mb-1">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>{% endif %}
+        {% if field.help_text %}<p class="text-xs text-slate-400 mt-1">{{ field.help_text|striptags }}</p>{% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" name="enregistrer_compte" class="btn btn-primary">Enregistrer le compte</button>
+  </form>
+
+  <form method="post" class="card p-6 space-y-4">
+    {% csrf_token %}
+    <h2 class="font-extrabold text-encre flex items-center gap-2"><i data-lucide="smile" class="w-5 h-5 text-success-600"></i> Profil</h2>
+    {% for field in profil_form %}
+      <div>
+        <label class="block text-sm font-semibold text-slate-600 mb-1">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>{% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" name="enregistrer_profil" class="btn btn-success">Enregistrer le profil</button>
+  </form>
+</div>
+
+<div class="mt-5 card p-6 flex items-center justify-between flex-wrap gap-3">
+  <div>
+    <h2 class="font-extrabold text-encre">Besoin de réinitialiser votre progression ?</h2>
+    <p class="text-sm text-slate-500">Contactez un administrateur ou modifiez vos missions via l'interface d'administration.</p>
+  </div>
+  <a href="{% url 'deconnexion' %}" class="btn btn-ghost text-red-600"><i data-lucide="log-out" class="w-4 h-4"></i> Se déconnecter</a>
+</div>
+{% endblock %}

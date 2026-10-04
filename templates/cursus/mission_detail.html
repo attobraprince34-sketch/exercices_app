@@ -1,0 +1,314 @@
+{% extends "cursus/_shell.html" %}
+{% load praxis_extras %}
+{% block title %}{{ mission.titre }} — Praxis{% endblock %}
+{% block content %}
+<a href="{% url 'catalogue' %}" class="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-brand-700 transition">
+  <i data-lucide="arrow-left" class="w-4 h-4"></i> Retour au catalogue
+</a>
+
+<!-- Bandeau de la fiche -->
+<div class="fiche-hero dom-{{ mission.domaine.couleur|default:'bleu' }} mt-3">
+  <div class="bande"></div>
+  <div class="trame"></div>
+  <div class="p-5 sm:p-7 relative">
+    <div class="flex items-start justify-between gap-4 flex-wrap">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <span class="dom-tag"><span class="dot"></span>{{ mission.domaine.titre|default:"Exercice" }}</span>
+          <span class="mono text-[10px] font-bold tracking-[0.12em] text-slate-400">{{ mission.get_type_display|upper }}</span>
+        </div>
+        <h1 class="mt-3 text-[24px] md:text-[30px] leading-tight font-extrabold tracking-tight text-encre">{{ mission.titre }}</h1>
+        {% if mission.accroche %}<p class="mt-2 text-[15px] text-slate-500 max-w-3xl leading-relaxed">{{ mission.accroche }}</p>{% endif %}
+      </div>
+      {% if terminee %}
+        <span class="resolu-badge !text-sm !px-4 !py-2 shrink-0"><i data-lucide="check-circle-2" class="w-4 h-4"></i> Résolu</span>
+      {% endif %}
+    </div>
+
+    <div class="mt-5 pt-4 border-t border-slate-100 flex items-center gap-x-6 gap-y-2 flex-wrap">
+      <span class="inline-flex items-center gap-2" title="Difficulté : palier {{ mission.palier }} sur 10">
+        <span class="rail-titre">Palier</span>
+        <span class="jauge">{% for b in "1234567890"|make_list %}<span class="bar {% if forloop.counter <= mission.palier %}on{% endif %}"></span>{% endfor %}</span>
+        <span class="mono text-xs font-bold" style="color:var(--dom)">{{ mission.palier }}/10</span>
+      </span>
+      {% if mission.duree %}<span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500"><i data-lucide="clock" class="w-4 h-4 text-slate-400"></i> {{ mission.duree }}</span>{% endif %}
+      {% if mission.outils %}<span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500"><i data-lucide="wrench" class="w-4 h-4 text-slate-400"></i> {{ mission.outils }}</span>{% endif %}
+      <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500"><i data-lucide="hash" class="w-4 h-4 text-slate-400"></i> {{ mission.get_langage_display }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="mt-6 grid xl:grid-cols-[minmax(0,1fr)_330px] gap-6 items-start">
+  <!-- Colonne principale : le brief -->
+  <div class="space-y-5">
+
+    <!-- 01 · Mise en situation -->
+    <section class="brief">
+      <div class="brief-head">
+        <span class="brief-num">01</span>
+        <i data-lucide="building-2" class="w-5 h-5 text-brand-600"></i>
+        <h2 class="font-extrabold text-encre">Mise en situation</h2>
+      </div>
+      <div class="brief-corps space-y-4">
+        <p class="text-slate-700 leading-relaxed">{{ mission.contexte|linebreaksbr }}</p>
+        <div class="rounded-xl bg-amber-50 border border-amber-100 p-4 flex gap-3">
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-500 shrink-0 mt-0.5"></i>
+          <p class="text-amber-900 text-sm leading-relaxed"><span class="font-extrabold">Le problème&nbsp:</span> {{ mission.probleme|linebreaksbr }}</p>
+        </div>
+        <div class="rounded-xl bg-success-50 border border-success-200 p-4 flex gap-3">
+          <i data-lucide="target" class="w-5 h-5 text-success-600 shrink-0 mt-0.5"></i>
+          <p class="text-success-800 text-sm leading-relaxed"><span class="font-extrabold">Ce que tu dois faire&nbsp:</span> {{ mission.objectif|linebreaksbr }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 · Décortiquer la mission -->
+    {% if etapes or mission.environnement or mission.contraintes %}
+    <section class="brief">
+      <div class="brief-head">
+        <span class="brief-num">02</span>
+        <i data-lucide="list-checks" class="w-5 h-5 text-brand-600"></i>
+        <h2 class="font-extrabold text-encre">Décortiquer la mission</h2>
+      </div>
+      <div class="brief-corps space-y-5">
+        {% if etapes %}
+        <ol class="space-y-3">
+          {% for e in etapes %}
+          <li class="flex gap-3.5 group">
+            <span class="grid place-items-center w-7 h-7 rounded-lg shrink-0 font-bold text-xs text-slate-500 bg-slate-100 group-hover:bg-brand-600 group-hover:text-white transition">{{ forloop.counter }}</span>
+            <span class="text-slate-700 pt-1 leading-relaxed">{{ e.texte }}</span>
+          </li>
+          {% endfor %}
+        </ol>
+        {% endif %}
+
+        {% if mission.environnement %}
+        <div>
+          <p class="rail-titre mb-2.5">Environnement de travail</p>
+          <div class="flex flex-wrap gap-2">
+            {% for outil in mission.environnement|lignes %}
+            <span class="mono inline-flex items-center rounded-lg bg-slate-100 border border-slate-200 px-2.5 py-1 text-[11px] font-bold text-slate-600">{{ outil }}</span>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        {% if mission.contraintes %}
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+          <p class="rail-titre mb-1.5 flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Contraintes professionnelles</p>
+          <p class="text-sm text-slate-600 leading-relaxed">{{ mission.contraintes|linebreaksbr }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- 03 · Ce que tu apprends -->
+    {% if mission.ce_que_tu_apprends %}
+    <section class="brief">
+      <div class="brief-head">
+        <span class="brief-num">03</span>
+        <i data-lucide="graduation-cap" class="w-5 h-5 text-brand-600"></i>
+        <h2 class="font-extrabold text-encre">Ce que tu apprends / maîtrises</h2>
+      </div>
+      <div class="brief-corps">
+        <p class="text-slate-700 leading-relaxed">{{ mission.ce_que_tu_apprends|linebreaksbr }}</p>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- 04 · Poste de travail -->
+    <section class="brief">
+      <div class="brief-head">
+        <span class="brief-num">04</span>
+        <i data-lucide="terminal" class="w-5 h-5 text-encre"></i>
+        <h2 class="font-extrabold text-encre">Ton poste de travail</h2>
+        <span class="ml-auto mono text-[10px] font-bold tracking-wider text-slate-400">{{ mission.get_langage_display|upper }}</span>
+      </div>
+      <div class="brief-corps space-y-4">
+        <div class="rounded-xl bg-brand-50 border border-brand-100 p-4 flex gap-3">
+          <i data-lucide="monitor" class="w-5 h-5 text-brand-600 shrink-0 mt-0.5"></i>
+          <p class="text-sm text-brand-900 leading-relaxed">Pas d'éditeur dans l'appli&nbsp: <b>code dans ton environnement habituel (VSCode)</b>, teste ton programme en local. Quand ça marche, reviens cliquer sur «&nbsp;Je l'ai résolu&nbsp;» juste en dessous.</p>
+        </div>
+        {% if mission.amorce %}
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <p class="rail-titre">Point de départ — copie-le dans ton éditeur</p>
+            <button type="button" onclick="copierCode('amorce', this)" class="btn btn-ghost text-xs px-2.5 py-1"><i data-lucide="copy" class="w-3.5 h-3.5"></i> Copier</button>
+          </div>
+          <pre id="amorce" class="mono text-xs leading-relaxed bg-encre text-slate-100 rounded-xl p-4 overflow-auto whitespace-pre-wrap shadow-inner">{{ mission.amorce }}</pre>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- 05 · Critères de réussite -->
+    {% if criteres or mission.criteres_texte %}
+    <section class="brief">
+      <div class="brief-head">
+        <span class="brief-num">05</span>
+        <i data-lucide="badge-check" class="w-5 h-5 text-success-600"></i>
+        <h2 class="font-extrabold text-encre">Comment savoir si c'est bon&nbsp;?</h2>
+      </div>
+      <div class="brief-corps">
+        <p class="text-sm text-slate-500 mb-4">Coche chaque point après l'avoir vérifié dans tes tests — tout doit être vert avant de te déclarer résolu.</p>
+        <ul class="space-y-2.5">
+          {% for cr in criteres %}
+          <li class="flex items-start gap-3 text-slate-700">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-success-500 shrink-0 mt-0.5"></i>
+            <span class="leading-relaxed">{{ cr.texte }}</span>
+          </li>
+          {% empty %}
+          {% for ligne in mission.criteres_texte|lignes %}
+          <li class="flex items-start gap-3 text-slate-700">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-success-500 shrink-0 mt-0.5"></i>
+            <span class="leading-relaxed">{{ ligne }}</span>
+          </li>
+          {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Barre d'action collante -->
+    <div class="barre-action">
+      <div class="rounded-2xl border border-slate-200 bg-white/95 backdrop-blur px-5 py-4 shadow-[0_18px_40px_-18px_rgba(11,18,32,.35)] flex flex-col sm:flex-row items-center gap-4">
+        <div class="min-w-0">
+          <p class="font-extrabold text-encre flex items-center gap-2"><i data-lucide="rocket" class="w-5 h-5 text-success-600"></i> Ton programme fonctionne&nbsp;?</p>
+          <p class="text-xs text-slate-500 mt-0.5">
+            {% if suivante %}Déclare-le résolu et enchaîne sur le suivant du même domaine.{% else %}Déclare-le résolu — le catalogue n'attend plus que toi.{% endif %}
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center justify-end gap-2 w-full sm:w-auto sm:ml-auto">
+          {% if terminee %}
+            {% if suivante %}
+              <a href="{% url 'mission_detail' slug=suivante.slug %}" class="btn btn-success px-5 justify-center flex-1 sm:flex-none">
+                <i data-lucide="flag-checkered" class="w-5 h-5"></i> Exercice suivant
+              </a>
+            {% else %}
+              <a href="{% url 'mission_prochaine' %}" class="btn btn-success px-5 justify-center flex-1 sm:flex-none">
+                <i data-lucide="flag-checkered" class="w-5 h-5"></i> Je l'ai résolu → suivant
+              </a>
+            {% endif %}
+          {% else %}
+          <form method="post" action="{% url 'terminer_mission' slug=mission.slug %}" class="flex-1 sm:flex-none">{% csrf_token %}
+            <input type="hidden" name="suite" value="suivant">
+            <button class="btn btn-success px-5 w-full justify-center">
+              <i data-lucide="flag-checkered" class="w-5 h-5"></i>
+              {% if suivante %}Je l'ai résolu → suivant{% else %}Je l'ai résolu{% endif %}
+            </button>
+          </form>
+          <form method="post" action="{% url 'terminer_mission' slug=mission.slug %}">{% csrf_token %}
+            <input type="hidden" name="suite" value="rester">
+            <button class="btn btn-ghost" title="Marquer résolu sans changer de page"><i data-lucide="bookmark" class="w-4 h-4"></i> Rester ici</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="space-y-5 xl:sticky xl:top-[92px]">
+    {% if terminee %}
+    <div class="brief !border-success-200">
+      <div class="brief-corps">
+        <p class="font-extrabold text-encre flex items-center gap-2"><i data-lucide="party-popper" class="w-5 h-5 text-success-600"></i> Déjà résolu</p>
+        <p class="text-sm text-slate-500 mt-1">Reviens dessus pour l'améliorer, ou repars de zéro.</p>
+        <form method="post" action="{% url 'rouvrir_mission' slug=mission.slug %}" class="mt-3">{% csrf_token %}
+          <button class="btn btn-ghost w-full text-sm"><i data-lucide="rotate-ccw" class="w-4 h-4"></i> Rouvrir l'exercice</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Carte d'identité -->
+    <div class="brief dom-{{ mission.domaine.couleur|default:'bleu' }}">
+      <div class="brief-head">
+        <i data-lucide="badge-info" class="w-5 h-5" style="color:var(--dom)"></i>
+        <h2 class="font-extrabold text-encre">Carte d'identité</h2>
+      </div>
+      <div class="brief-corps">
+        <dl class="space-y-3 text-sm">
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-slate-400 font-bold text-xs uppercase tracking-wider">Domaine</dt>
+            <dd class="font-extrabold text-encre text-right">{{ mission.domaine.titre|default:"—" }}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-slate-400 font-bold text-xs uppercase tracking-wider">Difficulté</dt>
+            <dd class="flex items-center gap-2"><span class="jauge">{% for b in "1234567890"|make_list %}<span class="bar {% if forloop.counter <= mission.palier %}on{% endif %}"></span>{% endfor %}</span></dd>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-slate-400 font-bold text-xs uppercase tracking-wider">Format</dt>
+            <dd class="font-bold text-slate-700">{{ mission.get_type_display }}</dd>
+          </div>
+          {% if mission.duree %}
+          <div class="flex items-center justify-between gap-3">
+            <dt class="text-slate-400 font-bold text-xs uppercase tracking-wider">Durée</dt>
+            <dd class="font-bold text-slate-700">{{ mission.duree }}</dd>
+          </div>
+          {% endif %}
+          {% if mission.outils %}
+          <div class="flex items-start justify-between gap-3">
+            <dt class="text-slate-400 font-bold text-xs uppercase tracking-wider">Outils</dt>
+            <dd class="font-bold text-slate-700 text-right">{{ mission.outils }}</dd>
+          </div>
+          {% endif %}
+          {% if mission.themes %}
+          <div class="pt-1">
+            <dt class="text-slate-400 font-bold text-xs uppercase tracking-wider mb-2">Thèmes</dt>
+            <dd class="flex flex-wrap gap-1.5 justify-end">
+              {% for th in mission.themes|liste_csv %}
+                <a href="{% url 'catalogue' %}?theme={{ th }}" class="rounded-full bg-slate-100 border border-slate-200 px-2 py-0.5 text-[11px] font-bold text-slate-500 hover:border-brand-300 hover:text-brand-600 transition">{{ th }}</a>
+              {% endfor %}
+            </dd>
+          </div>
+          {% endif %}
+        </dl>
+      </div>
+    </div>
+
+    {% if suivante %}
+    <a href="{% url 'mission_detail' slug=suivante.slug %}" class="exo-carte dom-{{ suivante.domaine.couleur|default:'bleu' }} group">
+      <div class="p-5">
+        <div class="flex items-center justify-between">
+          <span class="rail-titre flex items-center gap-1.5"><i data-lucide="arrow-right-circle" class="w-4 h-4"></i> Après celui-ci</span>
+          <span class="dom-tag"><span class="dot"></span>{{ suivante.domaine.titre }}</span>
+        </div>
+        <p class="mt-2.5 font-extrabold text-encre text-sm leading-snug line-clamp-2 group-hover:text-brand-700 transition">{{ suivante.titre }}</p>
+        <p class="mt-1.5 text-xs text-slate-400 font-bold">Palier {{ suivante.palier }}/10 · {{ suivante.duree }}</p>
+      </div>
+    </a>
+    {% endif %}
+
+    <div class="brief">
+      <div class="brief-head">
+        <i data-lucide="lightbulb" class="w-5 h-5 text-amber-500"></i>
+        <h2 class="font-extrabold text-encre">Besoin d'aide&nbsp;?</h2>
+      </div>
+      <div class="brief-corps">
+        <div id="indices" class="space-y-2">
+          {% include "cursus/partials/_indices.html" %}
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function copierCode(id, btn){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const old = btn.innerHTML;
+    navigator.clipboard.writeText(el.innerText).then(function(){
+      btn.innerHTML = '<i data-lucide="check" class="w-3.5 h-3.5"></i> Copié\u00a0!';
+      if(window.lucide) lucide.createIcons();
+      setTimeout(function(){ btn.innerHTML = old; if(window.lucide) lucide.createIcons(); });
+    });
+  }
+</script>
+{% endblock %}

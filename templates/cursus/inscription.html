@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Inscription — Praxis{% endblock %}
+{% block body %}
+<div class="min-h-screen grid md:grid-cols-2">
+  <div class="hidden md:flex bg-encre text-white flex-col justify-between p-10 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(600px 340px at 85% 8%, rgba(15,157,88,.24), transparent 60%),radial-gradient(520px 320px at 5% 100%, rgba(36,80,235,.25), transparent 60%)"></div>
+    <a href="{% url 'accueil' %}" class="relative flex items-center gap-2.5"><span class="grid place-items-center w-9 h-9 rounded-xl text-white font-black" style="background:linear-gradient(135deg,#12b268,#0b7a45)">P</span><span class="font-extrabold text-lg">Praxis</span></a>
+    <div class="relative">
+      <h2 class="text-3xl font-extrabold leading-tight">Apprenez en <span class="text-success-400">faisant</span>,<br>pas en lisant.</h2>
+      <ul class="mt-6 space-y-3 text-slate-300 text-sm">
+        <li class="flex items-center gap-2.5"><i data-lucide="check-circle-2" class="w-5 h-5 text-success-400 shrink-0"></i> Mises en situation d'entreprise réelles</li>
+        <li class="flex items-center gap-2.5"><i data-lucide="check-circle-2" class="w-5 h-5 text-success-400 shrink-0"></i> Laboratoires de cybersécurité autorisés</li>
+        <li class="flex items-center gap-2.5"><i data-lucide="check-circle-2" class="w-5 h-5 text-success-400 shrink-0"></i> 10 paliers de difficulté, du P1 au P10</li>
+        <li class="flex items-center gap-2.5"><i data-lucide="check-circle-2" class="w-5 h-5 text-success-400 shrink-0"></i> Vous codez chez vous, dans votre VSCode</li>
+      </ul>
+    </div>
+    <div class="relative text-xs text-slate-500">© Praxis — apprentissage pratique de l'informatique.</div>
+  </div>
+  <div class="flex items-center justify-center p-6 sm:p-10">
+    <div class="w-full max-w-sm">
+      <a href="{% url 'accueil' %}" class="md:hidden flex items-center gap-2 mb-6"><span class="grid place-items-center w-8 h-8 rounded-lg bg-success-500 text-white font-black">P</span><span class="font-extrabold text-encre">Praxis</span></a>
+      <h1 class="text-2xl font-extrabold text-encre">Créer un compte</h1>
+      <p class="text-sm text-slate-500 mt-1">Gratuit, pour démarrer vos premières missions.</p>
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+          <div>
+            <label class="block text-sm font-semibold text-slate-600 mb-1">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<p class="text-xs text-red-600 mt-1">{{ field.errors|striptags }}</p>{% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-success w-full">Créer mon compte</button>
+      </form>
+      <p class="text-sm text-slate-500 mt-6 text-center">Déjà inscrit ? <a href="{% url 'connexion' %}" class="font-bold text-brand-700 hover:underline">Se connecter</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% for ind in indices %}
+  {% if ind.pk in indices_vus %}
+    <div class="rounded-lg bg-brand-50 border border-brand-100 p-3 text-sm text-slate-600">
+      <div class="text-xs font-bold text-brand-700 mb-1">Indice n°{{ forloop.counter }}</div>
+      {{ ind.texte|linebreaksbr }}
+    </div>
+  {% endif %}
+{% endfor %}
+{% if prochain_indice %}
+  <button hx-post="{% url 'afficher_indice' prochain_indice.pk %}" hx-target="#indices" hx-swap="outerHTML"
+    class="w-full text-left text-sm font-semibold text-brand-700 hover:underline flex items-center gap-2">
+    <i data-lucide="help-circle" class="w-4 h-4"></i> Afficher un indice
+  </button>
+{% elif not indices %}
+  <p class="text-sm text-slate-400">Aucun indice pour cette mission.</p>
+{% endif %}
